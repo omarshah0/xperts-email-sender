@@ -25,6 +25,7 @@ const transporter = nodemailer.createTransport({
 
 // Serve static files from the 'public' directory
 app.use(express.static('public'))
+app.use('/assets', express.static('public/assets'))
 
 // Handle CORS
 app.use(cors())
@@ -37,6 +38,7 @@ app.post('/send-email', async (req, res) => {
     const htmlContent = `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
         <div style="background-color: #f8f9fa; padding: 20px; text-align: center;">
+          <img src="cid:company-logo" alt="Xperts Software House" style="max-width: 200px; height: auto; margin-bottom: 15px;">
           <h1 style="color: #333;">Xperts Software House</h1>
         </div>
         
@@ -54,11 +56,19 @@ app.post('/send-email', async (req, res) => {
     `
 
     const mailOptions = {
-      from: '"Xperts Software House" <contact@xpertssoftwarehouse.com>',
+      from: {
+        name: 'Xperts Software House',
+        address: 'contact@xpertssoftwarehouse.com'
+      },
       to,
       subject,
       text, // Fallback plain text
       html: htmlContent, // HTML version
+      attachments: [{
+        filename: 'logo.png',
+        path: 'public/assets/images/logo.png',
+        cid: 'company-logo'
+      }]
     }
 
     await transporter.sendMail(mailOptions)
@@ -67,6 +77,13 @@ app.post('/send-email', async (req, res) => {
     console.error('Error sending email:', error)
     res.status(500).json({ error: 'Failed to send email' })
   }
+})
+
+// Test route to verify assets
+app.get('/test-assets', (req, res) => {
+  res.send(`
+    <img src="/assets/images/logo.png" alt="Test Logo">
+  `)
 })
 
 const PORT = process.env.PORT || 3000
