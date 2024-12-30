@@ -38,7 +38,7 @@ app.post('/send-email', async (req, res) => {
     const htmlContent = `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
         <div style="background-color: #f8f9fa; padding: 20px; text-align: center;">
-          <img src="cid:company-logo" alt="Xperts Software House" style="max-width: 200px; height: auto; margin-bottom: 15px;">
+          <img src="https://remix-email.up.railway.app/assets/images/logo.png" alt="Xperts Software House" style="max-width: 200px; height: auto; margin-bottom: 15px;">
           <h1 style="color: #333;">Xperts Software House</h1>
         </div>
         
@@ -58,17 +58,12 @@ app.post('/send-email', async (req, res) => {
     const mailOptions = {
       from: {
         name: 'Xperts Software House',
-        address: 'contact@xpertssoftwarehouse.com'
+        address: 'contact@xpertssoftwarehouse.com',
       },
       to,
       subject,
       text, // Fallback plain text
       html: htmlContent, // HTML version
-      attachments: [{
-        filename: 'logo.png',
-        path: 'public/assets/images/logo.png',
-        cid: 'company-logo'
-      }]
     }
 
     await transporter.sendMail(mailOptions)
